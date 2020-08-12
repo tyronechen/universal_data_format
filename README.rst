@@ -7,9 +7,11 @@ A flexible, annotation-free biological data representation.
 Installation
 ############
 
-..
+::
+
   git clone https://gitlab.com/tyagilab/universal_data_format
   conda env create -f env.yml
+
 
 Usage
 #####
