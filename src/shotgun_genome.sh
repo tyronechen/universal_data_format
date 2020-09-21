@@ -31,15 +31,6 @@ mkdir -p ${OUTFILE_DIR}
 
 check_software() {
   # install necessary software utilities from:
-  # http://hgdownload.soe.ucsc.edu/admin/exe/ and bedtools
-  which bamToBed > /dev/null
-  if [[ $? == "" ]]; then
-    echo "# Download bamToBed from http://hgdownload.soe.ucsc.edu/admin/exe/"
-    exit 1
-  else
-    echo "# Calling bamToBed from this path:"
-    echo "#" $(which bamToBed)
-  fi
   # install bedtools from source or conda install bedtools
   which bedtools > /dev/null
   if [[ $? == "" ]]; then
