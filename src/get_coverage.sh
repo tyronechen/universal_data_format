@@ -64,6 +64,7 @@ sort_bed() {
   # add this if want bytesort instead of numeric: sort -T ./ -k1,1 -k2,2n
   echo "bedtools sort -i ${1} -g ${2}" '>' "${3}"
   bedtools sort -i ${1} -g ${2} > ${3}
+  if [[ $? == 0 ]]; then rm ${1}; fi
 }
 
 get_coverage() {
@@ -72,6 +73,7 @@ get_coverage() {
   # NOTE: if unsorted, you will probably get a memory leak!
   echo "bedtools coverage -sorted -g ${3} -a ${2} -b ${1}" '>' "${4}"
   bedtools coverage -sorted -g ${3} -a ${2} -b ${1} > ${4}
+  if [[ $? == 0 ]]; then rm ${1}; fi
 }
 
 write_counts() {
@@ -81,6 +83,7 @@ write_counts() {
   echo "paste <(cut -f1-3 ${1} | tr '\t' '_') <(cut -f5 ${1})" '>>' "${1}.counts.tsv"
   printf "Features\t${SAMPLE_NAME}\n" > ${1}.counts.tsv
   paste <(cut -f1-3 ${1} | tr '\t' '_') <(cut -f5 ${1}) >> ${1}.counts.tsv
+  if [[ $? == 0 ]]; then rm ${1}; fi
 }
 
 main() {
@@ -104,14 +107,6 @@ main() {
   # get_bedgraph ${SAMPLE_PATH}.bed ${GENOME_PATH}
   # write_counts ${SAMPLE_PATH}.cov
   write_counts ${OUTFILE_DIR}/${BASE_SAMPLE_PATH}.cov
-
-  # cleanup intermediate files
-  rm ${OUTFILE_DIR}/${BASE_SAMPLE_PATH}.bed.unsort \
-    ${OUTFILE_DIR}/${BASE_SAMPLE_PATH}.bed \
-    ${OUTFILE_DIR}/${BASE_SAMPLE_PATH}.cov
-  #if [[ $? == 0 ]]; then
-  #  rm ${SAMPLE_PATH}.bed.unsort ${SAMPLE_PATH}.bed ${SAMPLE_PATH}.cov ${GENOME_PATH}.txt ${GENOME_PATH}.bed
-  #fi
 }
 
 main
