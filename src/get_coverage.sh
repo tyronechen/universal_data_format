@@ -10,6 +10,7 @@ if [[ $1 == "" ]] || [[ $2 == "" ]]; then
   exit 1
 else
   GENOME_SIZE=${2}
+  BASE_GENOME_SIZE=$(basename ${2})
   FULL_GENOME_PATH=${1}
   FULL_SAMPLE_PATH=${3}
   BASE_GENOME_PATH=$(basename ${1})
@@ -100,8 +101,8 @@ main() {
 
   # get_coverage SORTED.BED GENOME.BED OUTFILE_PATH: -> COVERAGE.COV
   get_coverage ${OUTFILE_DIR}/${BASE_SAMPLE_PATH}.bed \
-    ${FULL_GENOME_PATH} \
-    ${GENOME_SIZE} \
+    ${FULL_GENOME_PATH/%.bed}.fa.bed \
+    ${OUTFILE_DIR}/${BASE_GENOME_SIZE} \
     ${OUTFILE_DIR}/${BASE_SAMPLE_PATH}.cov
 
   # get_bedgraph ${SAMPLE_PATH}.bed ${GENOME_PATH}
