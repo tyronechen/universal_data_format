@@ -80,9 +80,9 @@ get_coverage() {
 write_counts() {
   # write counts per block out to file
   #   write_counts /path/to/data.cov: -> counts
-  echo 'printf' "Features\t${SAMPLE_NAME}\n" '>' "${1}.counts.tsv"
+  echo 'printf' "\t${SAMPLE_PATH}\n" '>' "${1}.counts.tsv"
   echo "paste <(cut -f1-3 ${1} | tr '\t' '_') <(cut -f5 ${1})" '>>' "${1}.counts.tsv"
-  printf "Features\t${SAMPLE_NAME}\n" > ${1}.counts.tsv
+  printf "\t${SAMPLE_PATH}\n" > ${1}.counts.tsv
   paste <(cut -f1-3 ${1} | tr '\t' '_') <(cut -f5 ${1}) >> ${1}.counts.tsv
   if [[ $? == 0 ]]; then rm ${1}; fi
 }
