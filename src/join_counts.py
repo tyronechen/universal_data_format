@@ -3,6 +3,7 @@
 import argparse
 import os
 import re
+import subprocess as sp
 from time import time
 import warnings
 import pandas as pd
@@ -73,7 +74,7 @@ def main():
         os.remove(outfile_path)
 
     join_data(infile_paths, outfile_path, rescale=args.rescale)
-    
+    sp.call("".join(["perl -pi -e \'s/^\t//\' ", outfile_path]), shell=True)
     print("# Writing file to:", outfile_path)
 
     print("# Reproduce by running this command:")
