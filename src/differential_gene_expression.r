@@ -12,7 +12,7 @@ parse_argv <- function() {
     p <- add_argument(p, "targets", type="character", help="sample information")
     p <- add_argument(p, "--outfile_dir", type="character", default="./",
                       help="sample information")
-    p <- add_argument(p, "--plot", type="character", help="output plots file")
+    p <- add_argument(p, "--names", type="character", help="output names")
     # Parse the command line arguments
     argv <- parse_args(p)
 
@@ -20,9 +20,20 @@ parse_argv <- function() {
     return(argv)
 }
 
+write_args <- function(args, argpath) {
+  args <- paste("Rscript differential_gene_expression.r \\ \n  ",
+    args$infile, " \\ \n  ", args$targets, " \\ \n  -o", args$outfile_dir,
+    " \\ \n  -n", args$names, "\n"
+  )
+  print(cat(args))
+  write(args, sep="", file=argpath)
+}
+
 main <- function() {
   argv <- parse_argv()
-  pdf(paste(argv$outfile_dir, "/", argv$plot, sep=""))
+  dir.create(file.path(argv$outfile_dir))
+  write_args(argv, paste(argv$outfile_dir, "/", argv$names, ".r", sep=""))
+  pdf(paste(argv$outfile_dir, "/", argv$names, ".pdf", sep=""))
   targets <- readTargets(argv$targets)
 
   # create a design matrix
@@ -45,8 +56,10 @@ main <- function() {
 
   # fit linear model and assess differential expression
   fit <- eBayes(lmFit(voomed, design))
-  topTable(fit, coef=2)
 
+  write.table(topTable(fit, coef=2), sep="\t",
+    file=paste(argv$outfile_dir, "/", argv$names, ".top.tsv", sep="")
+  )
   dev.off()
 }
 
