@@ -12,6 +12,7 @@ parse_argv <- function() {
     p <- add_argument(p, "targets", type="character", help="sample information")
     p <- add_argument(p, "--outfile_dir", type="character", default="./",
                       help="sample information")
+    p <- add_argument(p, "--plot", type="character", help="output plots file")
     # Parse the command line arguments
     argv <- parse_args(p)
 
@@ -21,6 +22,7 @@ parse_argv <- function() {
 
 main <- function() {
   argv <- parse_argv()
+  pdf(paste(argv$outfile_dir, "/", argv$plot, sep=""))
   targets <- readTargets(argv$targets)
 
   # create a design matrix
@@ -36,7 +38,7 @@ main <- function() {
   dge <- dge[isexpr,]
 
   # perform voom normalization
-  voomed <- voom(dge,design,plot=TRUE)
+  voomed <- voom(dge, design, plot=TRUE)
 
   # cluster libraries
   plotMDS(voomed, xlim=c(-2.5,2.5))
@@ -44,6 +46,8 @@ main <- function() {
   # fit linear model and assess differential expression
   fit <- eBayes(lmFit(voomed, design))
   topTable(fit, coef=2)
+
+  dev.off()
 }
 
 main()
