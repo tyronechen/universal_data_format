@@ -57,8 +57,8 @@ main <- function() {
   # fit linear model and assess differential expression
   fit <- eBayes(lmFit(voomed, design))
 
-  write.table(topTable(fit, coef=2), sep="\t",
-    file=paste(argv$outfile_dir, "/", argv$names, ".top.tsv", sep="")
+  write.table(topTable(fit, number=Inf, sort.by="P", coef=2), sep="\t",
+    file=paste(argv$outfile_dir, "/", argv$names, ".top.tsv", sep=""), quote=F
   )
   dev.off()
 }
