@@ -1,8 +1,0 @@
-# Processing files:
-# ../results/A_1.bam.24000/A_1.bam.cov.counts.tsv
-# ../results/A_2.bam.24000/A_2.bam.cov.counts.tsv
-# ../results/B_1.bam.24000/B_1.bam.cov.counts.tsv
-# ../results/B_2.bam.24000/B_2.bam.cov.counts.tsv
-# Writing file to: bata.tsv
-# Reproduce by running this command:
-python join_counts.py ../results/A_1.bam.24000/A_1.bam.cov.counts.tsv ../results/A_2.bam.24000/A_2.bam.cov.counts.tsv ../results/B_1.bam.24000/B_1.bam.cov.counts.tsv ../results/B_2.bam.24000/B_2.bam.cov.counts.tsv -o bata.tsv
