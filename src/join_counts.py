@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# take a mauve multiseq alignment, remove gaps & N and split to multifasta file.
+# take a list of counts file(s), join all into single file, rescaling if needed.
 import argparse
 import os
 import re
