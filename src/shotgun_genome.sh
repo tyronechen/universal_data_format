@@ -4,7 +4,7 @@
 #   $2 = window_size
 #   $3 = outfile_dir
 if [[ $1 == "" ]] ; then
-  echo "Usage: get_coverage <GENOME_PATH> [WINDOW_SIZE] [OUTFILE_DIR]" | fmt
+  echo "Usage: shotgun_genome.sh <GENOME_PATH> [WINDOW_SIZE] [OUTFILE_DIR]" | fmt
   echo "Genome should be available as fasta file." | fmt
   exit 1
 else
@@ -65,8 +65,8 @@ get_genome() {
 genome_to_txt() {
   # convert genome to bedtools compatible format
   #   genome_to_bed /path/to/genome.fa: -> index
-  echo "faidx -i bed ${1} | cut -f1,3 | grep -v "_" | grep -v EBV" '>' "${OUTFILE_DIR}/${BASE_GENOME_PATH}.txt"
-  faidx -i bed ${1} | cut -f1,3 | grep -v "_" | grep -v EBV > ${OUTFILE_DIR}/${BASE_GENOME_PATH}.txt
+  echo "faidx -i bed ${1} | cut -f1,3" '>' "${OUTFILE_DIR}/${BASE_GENOME_PATH}.txt"
+  faidx -i bed ${1} | cut -f1,3 > ${OUTFILE_DIR}/${BASE_GENOME_PATH}.txt
 }
 
 shotgun_genome() {
