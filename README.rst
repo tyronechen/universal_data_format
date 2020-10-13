@@ -12,7 +12,7 @@ Installation
 With conda::
 
   git clone "https://gitlab.com/tyagilab/universal_data_format"
-  conda create -n <add_your_channel_name_here> install \
+  conda create -n <add_your_channel_name_here> \
     pandas tqdm \
     bioconductor-biocinstaller \
     bioconductor-edger bioconductor-limma bioconductor-rsubread
