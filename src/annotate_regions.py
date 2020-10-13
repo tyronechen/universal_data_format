@@ -44,6 +44,18 @@ def load_gtf(infile_path: str, header: list=["seqnames", "source", "feature",
     """
     return pd.read_csv(infile_path, sep="\t", skiprows=5, names=header)
 
+def filter_regions(regions: pd.DataFrame, filter_col: str="adj.P.Val",
+                   filter_val: float=0.05):
+    """
+    Filter out regions of interest only, default =< 0.05 adjusted p vals
+
+    Arguments:
+        (REQUIRED) regions: dataframe containing data of interest
+        (OPTIONAL) filter_col: column to filter on
+        (OPTIONAL) filter_val: value in column to filter on
+    """
+    return(regions[regions[filter_col] <= filter_val])
+
 def annotate_regions(abundance: pd.DataFrame, gtf: pd.DataFrame,
                      outfile_path: str="./out.tsv", hide_progress: bool=True):
     """
@@ -138,7 +150,7 @@ def main():
         warnings.warn("# Output file exists, overwriting!",category=UserWarning)
         os.remove(outfile_path)
 
-    annotate_regions(load_regions(infile_path),
+    annotate_regions(filter_regions(load_regions(infile_path),"adj.P.Val",0.05),
                      load_gtf(gtf_path),
                      outfile_path,
                      hide_progress=args.hide_progress)
