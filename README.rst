@@ -25,6 +25,7 @@ Manual install::
   # R packages (within R)
   source("http://bioconductor.org/biocLite.R")
   biocLite(pkgs = c("Rsubread","limma","edgeR"))
+  install.packages("argparser")
 
   # python packages (command line)
   pip install pandas tqdm
