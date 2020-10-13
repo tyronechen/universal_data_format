@@ -15,7 +15,7 @@ parse_argv <- function() {
     p <- add_argument(p, "targets", type="character",
                       help="Sample information. Must include file paths \
                       in column InputFile and OutputFile!")
-    p <- add_argument(p, "basename", type="character",
+    p <- add_argument(p, "base_name", type="character",
                       help="Base name for index, eg human_hg19")
     p <- add_argument(p, "reference", type="character",
                       help="Reference genome as a fasta file [fa/fna/fasta]. \
@@ -30,8 +30,8 @@ parse_argv <- function() {
 }
 
 write_args <- function(args, argpath) {
-  args <- paste("Rscript differential_gene_expression.r \\ \n  ",
-    args$targets, " \\ \n  ", args$basename, " \\ \n  ",
+  args <- paste("Rscript align.r \\ \n  ",
+    args$targets, " \\ \n  ", args$base_name, " \\ \n  ",
     args$reference, " \\ \n  -c", args$counts_path, " \\ \n  -a",
     args$assembly, "\n"
   )
@@ -51,12 +51,12 @@ main <- function() {
   # build an index for reference sequence (Chr1 in hg19)
   original_dir <- getwd()
   setwd(dirname(argv$reference))
-  buildindex(basename=argv$basename, reference=basename(argv$reference))
+  buildindex(basename=argv$base_name, reference=basename(argv$reference))
   setwd(original_dir)
 
   # align reads
   align(
-    index=argv$basename,
+    index=argv$base_name,
     readfile1=targets$InputFile,
     input_format="gzFASTQ",
     output_format="BAM",
