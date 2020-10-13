@@ -25,6 +25,7 @@ def load_regions(infile_path: str):
     data = pd.read_csv(infile_path, sep="\t", index_col=0)
     data.reset_index(inplace=True)
     data.rename(columns={"Unnamed: 0": "index"}, inplace=True)
+    data.columns.str.replace(r'.bam$', '')
     data[["region_names", "start_region", "end_region"]] = \
         data["index"].str.split("_", expand=True,)
     data[["start_region"]] = data[["start_region"]].astype(int)
