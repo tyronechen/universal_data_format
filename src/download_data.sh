@@ -1,6 +1,6 @@
 #!/bin/bash
 # download files required for setup
-INIFILE_DIR="../data/"
+INFILE_DIR="../data/"
 
 # download data from site http://bioinf.wehi.edu.au/RNAseqCaseStudy/
 mkdir -p ${INFILE_DIR}
