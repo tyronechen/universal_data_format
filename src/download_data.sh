@@ -6,7 +6,9 @@ INFILE_DIR="../data/"
 mkdir -p ${INFILE_DIR}
 wget "http://bioinf.wehi.edu.au/RNAseqCaseStudy/data.tar.gz"
 mv data.tar.gz ${INFILE_DIR}
-tar -xzvf "${INFILE_DIR}/data.tar.gz"
+cd ${INFILE_DIR}
+tar -xzvf "data.tar.gz"
+cd "../src/"
 
 # download the reference genome version we are using and reformat
 # download gtf file
