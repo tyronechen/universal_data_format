@@ -52,7 +52,6 @@ main <- function() {
   original_dir <- getwd()
   setwd(dirname(argv$reference))
   buildindex(basename=argv$base_name, reference=basename(argv$reference))
-  setwd(original_dir)
 
   # align reads
   align(
@@ -67,6 +66,7 @@ main <- function() {
 
   # count numbers of reads mapped to NCBI Refseq genes
   fc <- featureCounts(files=targets$OutputFile, annot.inbuilt=argv$assembly)
+  setwd(original_dir)
   write.table(fc$counts, sep="\t", quote=F,
     file=paste(argv$outfile_dir, "/", argv$counts_path, ".tsv", sep="")
   )
