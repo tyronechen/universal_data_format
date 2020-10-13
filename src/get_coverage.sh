@@ -102,11 +102,10 @@ main() {
   # get_coverage SORTED.BED GENOME.BED OUTFILE_PATH: -> COVERAGE.COV
   get_coverage ${OUTFILE_DIR}/${BASE_SAMPLE_PATH}.bed \
     ${FULL_GENOME_PATH/%.bed}.fa.bed \
-    ${OUTFILE_DIR}/${BASE_GENOME_SIZE} \
+    ${GENOME_SIZE} \
     ${OUTFILE_DIR}/${BASE_SAMPLE_PATH}.cov
-
+  
   # get_bedgraph ${SAMPLE_PATH}.bed ${GENOME_PATH}
-  # write_counts ${SAMPLE_PATH}.cov
   write_counts ${OUTFILE_DIR}/${BASE_SAMPLE_PATH}.cov
 }
 

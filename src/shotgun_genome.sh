@@ -11,6 +11,7 @@ else
   FULL_GENOME_PATH=${1}
   BASE_GENOME_PATH=$(basename ${1})
   GENOME_PATH=$(basename ${1} | cut -d . -f1)
+  GENOME_DIR=$(dirname ${FULL_GENOME_PATH})
   echo "# Genome name:" ${GENOME_PATH}
 fi
 
@@ -65,8 +66,8 @@ get_genome() {
 genome_to_txt() {
   # convert genome to bedtools compatible format
   #   genome_to_bed /path/to/genome.fa: -> index
-  echo "faidx -i bed ${1} | cut -f1,3" '>' "${OUTFILE_DIR}/${BASE_GENOME_PATH}.txt"
-  faidx -i bed ${1} | cut -f1,3 > ${OUTFILE_DIR}/${BASE_GENOME_PATH}.txt
+  echo "faidx -i bed ${1} | cut -f1,3" '>' "${1}.txt" #${GENOME_DIR}/${BASE_GENOME_PATH}.txt"
+  faidx -i bed ${1} | cut -f1,3 > ${1}.txt #${GENOME_DIR}/${BASE_GENOME_PATH}.txt
 }
 
 shotgun_genome() {
@@ -83,7 +84,7 @@ main() {
   # genome_to_txt GENOME.FASTA: -> INDEX.TXT
   genome_to_txt ${FULL_GENOME_PATH} # hg19_chr1.fa
   # shotgun_genome INDEX.TXT WINDOW: -> GENOME.BED
-  shotgun_genome ${OUTFILE_DIR}/${BASE_GENOME_PATH}.txt ${WINDOW_SIZE}
+  shotgun_genome ${FULL_GENOME_PATH}.txt ${WINDOW_SIZE} #${OUTFILE_DIR}/${BASE_GENOME_PATH}.txt ${WINDOW_SIZE}
 }
 
 main
