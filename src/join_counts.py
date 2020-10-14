@@ -83,8 +83,8 @@ def join_contiguous(data: pd.DataFrame, filter_val: int=0):
     gaps = np.diff(gaps).nonzero()[0]
     gaps = np.reshape(gaps, (-1,2))
 
-    contigs = [combine_contigs(data, i) for i in contigs[:2]]
-    gaps = [combine_contigs(data, i) for i in gaps[:2]]
+    contigs = [combine_contigs(data, i) for i in contigs]
+    gaps = [combine_contigs(data, i) for i in gaps]
 
     data = pd.concat([pd.concat(contigs), pd.concat(gaps)], axis=0)
     new_indices = [i[0] if type(i) == tuple else i for i in data.index]
