@@ -79,22 +79,44 @@ def join_contiguous(data: pd.DataFrame, filter_val: int=0):
     contigs = np.diff(contigs).nonzero()[0]
     contigs = np.reshape(contigs, (-1,2))
 
-    gapped = np.r_[False, not_contig, False]
-    gapped = np.diff(gapped).nonzero()[0]
-    gapped = np.reshape(gapped, (-1,2))
+    gaps = np.r_[False, not_contig, False]
+    gaps = np.diff(gaps).nonzero()[0]
+    gaps = np.reshape(gaps, (-1,2))
 
-    # contigs = [data.iloc[i[0]:i[1]] for i in contigs]
-    print(contigs)
-    print(gapped)
+    contigs = [combine_contigs(data, i) for i in contigs[:2]]
+    gaps = [combine_contigs(data, i) for i in gaps[:2]]
 
-    # gapped = np.diff(np.r_[False, ~is_contig]).nonzero()[0])
-    # for i in gapped[:2]:
-        # print(i)
-    for i in contigs[:2]:
-        print(data.iloc[i[0]:i[1]])
-
-    die
+    # x = pd.concat([pd.concat(contigs), pd.concat(gaps)], axis=0)
+    # # x = pd.concat(contigs) + pd.concat(gaps)
+    # # x = contigs + gaps
+    # y = x.index.tolist()
+    # for item in x.index:
+    #     if type(item) == tuple:
+    #         item = item[0]
+    # print([item[0] for item in x.index if type(item) == tuple])
+    # print(y)
+    #
+    # die
     pass
+
+def combine_contigs(data: pd.DataFrame, contig_indices: np.ndarray):
+    """
+    Add elements in sample column to match contiguous region
+
+    Arguments:
+        (REQUIRED) data: pandas dataframe to be collapsed
+        (REQUIRED) contig_indices: indices of contigs to take
+    """
+    data = data.iloc[contig_indices[0]:contig_indices[1]]
+    index = data.index
+    if len(index) > 1:
+        start = index[0].split("_")
+        end = index[-1].split("_")
+        index = "_".join([start[0], start[1], end[2]])
+    data = data.sum(axis=0)
+    data = pd.DataFrame(data).T
+    data.index = [index]
+    return data
 
 def _argument_parser():
     parser = argparse.ArgumentParser(description=
