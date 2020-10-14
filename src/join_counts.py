@@ -6,10 +6,12 @@ import re
 import subprocess as sp
 from time import time
 import warnings
+import numpy as np
 import pandas as pd
 
 def join_data(infile_paths: list, outfile_path: str, rescale: bool=False):
-    """Take a list of tab separated files with identical indices, join all.
+    """
+    Take a list of tab separated files with identical indices, join all.
 
     Arguments:
         (REQUIRED) infile_paths: list of input file paths
@@ -40,8 +42,59 @@ def join_data(infile_paths: list, outfile_path: str, rescale: bool=False):
         all_samples /= all_samples.max()
         is_empty = all_samples[(all_samples < 0) | (all_samples > 1)].dropna()
         assert is_empty.empty, "All values should be [0,1]! Check for negative?"
-    all_samples.to_csv(outfile_path, sep="\t")
     return all_samples
+
+def join_contiguous(data: pd.DataFrame, filter_val: int=0):
+    """
+    Join adjacent genomic regions together where reads map.
+
+    Arguments:
+        (REQUIRED) data: genomic regions labelled as <chrname>_<start>_<end>
+        (OPTIONAL) filter_val: dont join regions where value is sparse
+
+    Note that entries across all samples will be kept if one element is detected
+    You may want to filter small values before this step if they are not needed
+
+    Example input:
+        input:
+                        SAMPLE_1     SAMPLE_2   ...
+        chr1_001_100           0            0   ...
+        chr1_101_200         100           90   ...
+        chr1_201_300          50           70   ...
+        chr1_301_400           0           20   ...
+        chr1_401_500           0            0   ...
+        chr1_501_600           0            0   ...
+
+        output:
+                        SAMPLE_1     SAMPLE_2   ...
+        chr1_001_100           0            0   ...
+        chr1_101_400         150          180   ...
+        chr1_401_600           0            0   ...
+
+    """
+    is_contig = ((data > filter_val).sum(axis=1) > 0)
+    not_contig = ((data <= filter_val).sum(axis=1) == data.shape[1])
+
+    contigs = np.r_[False, is_contig, False]
+    contigs = np.diff(contigs).nonzero()[0]
+    contigs = np.reshape(contigs, (-1,2))
+
+    gapped = np.r_[False, not_contig, False]
+    gapped = np.diff(gapped).nonzero()[0]
+    gapped = np.reshape(gapped, (-1,2))
+
+    # contigs = [data.iloc[i[0]:i[1]] for i in contigs]
+    print(contigs)
+    print(gapped)
+
+    # gapped = np.diff(np.r_[False, ~is_contig]).nonzero()[0])
+    # for i in gapped[:2]:
+        # print(i)
+    for i in contigs[:2]:
+        print(data.iloc[i[0]:i[1]])
+
+    die
+    pass
 
 def _argument_parser():
     parser = argparse.ArgumentParser(description=
@@ -55,6 +108,8 @@ def _argument_parser():
                         help="Provide path to output file.")
     parser.add_argument("-r", "--rescale", action="store_true",
                         help="Rescale values to a scale of [0,1].")
+    parser.add_argument("-m", "--make_contiguous", type=int, default=None,
+                        help="Join adjacent genomic regions <= filter.")
     return parser.parse_args()
 
 def main():
@@ -73,16 +128,21 @@ def main():
         warnings.warn("# Output file exists, overwriting!", category=UserWarning)
         os.remove(outfile_path)
 
-    join_data(infile_paths, outfile_path, rescale=args.rescale)
+    data = join_data(infile_paths, outfile_path, rescale=args.rescale)
+    if not args.make_contiguous is None:
+        data = join_contiguous(data, filter_val=args.make_contiguous)
+
+    data.to_csv(outfile_path, sep="\t")
     sp.call("".join(["perl -pi -e \'s/^\t//\' ", outfile_path]), shell=True)
     print("# Writing file to:", outfile_path)
 
     print("# Reproduce by running this command:")
     if args.rescale:
         print("python join_counts.py", " ".join(infile_paths),
-              "-o", outfile_path, "-r")
+              "-o", outfile_path, "-r", "-m", args.make_contiguous)
     else:
-        print("python join_counts.py"," ".join(infile_paths),"-o",outfile_path)
+        print("python join_counts.py", " ".join(infile_paths),
+              "-o", outfile_path, "-m", args.make_contiguous)
 
 if __name__ == "__main__":
     main()
