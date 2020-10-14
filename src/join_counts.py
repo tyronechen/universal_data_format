@@ -86,18 +86,10 @@ def join_contiguous(data: pd.DataFrame, filter_val: int=0):
     contigs = [combine_contigs(data, i) for i in contigs[:2]]
     gaps = [combine_contigs(data, i) for i in gaps[:2]]
 
-    # x = pd.concat([pd.concat(contigs), pd.concat(gaps)], axis=0)
-    # # x = pd.concat(contigs) + pd.concat(gaps)
-    # # x = contigs + gaps
-    # y = x.index.tolist()
-    # for item in x.index:
-    #     if type(item) == tuple:
-    #         item = item[0]
-    # print([item[0] for item in x.index if type(item) == tuple])
-    # print(y)
-    #
-    # die
-    pass
+    data = pd.concat([pd.concat(contigs), pd.concat(gaps)], axis=0)
+    new_indices = [i[0] if type(i) == tuple else i for i in data.index]
+    data.index = new_indices
+    return data.sort_index()
 
 def combine_contigs(data: pd.DataFrame, contig_indices: np.ndarray):
     """
