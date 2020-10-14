@@ -89,7 +89,12 @@ def join_contiguous(data: pd.DataFrame, filter_val: int=0):
     data = pd.concat([pd.concat(contigs), pd.concat(gaps)], axis=0)
     new_indices = [i[0] if type(i) == tuple else i for i in data.index]
     data.index = new_indices
-    return data.sort_index()
+    data["sort_key"] = data.index #.str.split("_", expand=True)
+    data[["seqnames", "start", "end"]] = data.sort_key.str.split("_", expand=True)
+    data["start"] = data["start"].astype(int)
+    data.sort_values("start", inplace=True)
+    data.drop(["sort_key", "seqnames", "start", "end"], axis=1, inplace=True)
+    return data
 
 def combine_contigs(data: pd.DataFrame, contig_indices: np.ndarray):
     """
