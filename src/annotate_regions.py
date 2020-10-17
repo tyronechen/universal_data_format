@@ -199,7 +199,7 @@ def annotate_regions_highmem(abundance: pd.DataFrame, gtf: pd.DataFrame,
     # add the headers back in
     data = pd.read_csv(outfile_path, header=None, sep="\t").drop(0, axis=1)
     data.columns = annotated.columns
-    data.sort_values("adj.P.Val", ascending=False, inplace=True)
+    data.sort_values("adj.P.Val", ascending=True, inplace=True)
     data.to_csv(outfile_path, mode="w", sep="\t", index=None)
     return data
 
@@ -215,7 +215,7 @@ def _argument_parser():
     parser.add_argument("gtf_path", type=str,
                         help="Provide path to genome annotations file.")
     parser.add_argument("-o", "--outfile_path", type=str,
-                        help="Provide path to output file.")
+                        help="Provide path to output file (can be .gz).")
     parser.add_argument("-t", "--threshold", type=float, default=0.05,
                         help="Filter on adjusted pval threshold (if DEG list).")
     parser.add_argument("-p", "--hide_progress", action="store_true",
