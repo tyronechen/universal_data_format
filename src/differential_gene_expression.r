@@ -1,4 +1,9 @@
 #!/usr/bin/Rscript
+# This is a modified version of the code found here:
+#   http://bioinf.wehi.edu.au/RNAseqCaseStudy/
+
+# To run this case study, you should have R version of 3.0.2 or later
+
 library(argparser)
 library(edgeR)
 library(Rsubread)
@@ -36,9 +41,9 @@ main <- function() {
   pdf(paste(argv$outfile_dir, "/", argv$names, ".pdf", sep=""))
   targets <- readTargets(argv$targets)
 
-  # create a design matrix
-  celltype <- factor(targets$CellType)
-  design <- model.matrix(~celltype)
+  # create a design matrix, first column must be treatment condition
+  celltype <- factor(targets[[1]])
+  design <- model.matrix(~targets[[1]])
 
   # count numbers of reads mapped to NCBI Refseq genes
   data <- read.table(argv$infile, sep="\t")
