@@ -28,7 +28,7 @@ Manual install::
   install.packages("argparser")
 
   # python packages (command line)
-  pip install pandas tqdm
+  pip install pandas tqdm intervaltree pyfaidx
 
   # other packages
   # for bedtools, follow the instructions here:
