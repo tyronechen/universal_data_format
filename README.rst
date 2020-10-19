@@ -13,7 +13,7 @@ With conda::
 
   git clone "https://gitlab.com/tyagilab/universal_data_format"
   conda create -n <add_your_channel_name_here> \
-    pandas tqdm pyfaidx \
+    pandas tqdm pyfaidx intervaltree \
     bioconductor-biocinstaller r-argparser \
     bioconductor-edger bioconductor-limma bioconductor-rsubread
     bedtools samtools \
