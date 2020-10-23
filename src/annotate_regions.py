@@ -55,7 +55,11 @@ def filter_regions(regions: pd.DataFrame, filter_col: str="adj.P.Val",
         (OPTIONAL) filter_col: column to filter on
         (OPTIONAL) filter_val: value in column to filter on
     """
-    return(regions[regions[filter_col] <= filter_val])
+    if filter_col in regions.columns:
+        return regions[regions[filter_col] <= filter_val]
+    else:
+        warnings.warn("Column not found, not filtering!", category=UserWarning)
+        return regions
 
 def annotate_regions_lowmem(abundance: pd.DataFrame, gtf: pd.DataFrame,
                             outfile_path: str="./out.tsv",
@@ -116,7 +120,7 @@ def annotate_regions_lowmem(abundance: pd.DataFrame, gtf: pd.DataFrame,
 
 def annotate_regions_highmem(abundance: pd.DataFrame, gtf: pd.DataFrame,
                              outfile_path: str="./out.tsv",
-                             hide_progress: bool=True):
+                             hide_progress: bool=True, sort_by: str="adj.P.Val"):
     """
     Annotate region of genome with identifiers. The output format is line-based
     and multi-mapping is possible, for example if a region of interest contains
@@ -199,7 +203,10 @@ def annotate_regions_highmem(abundance: pd.DataFrame, gtf: pd.DataFrame,
     # add the headers back in
     data = pd.read_csv(outfile_path, header=None, sep="\t").drop(0, axis=1)
     data.columns = annotated.columns
-    data.sort_values("adj.P.Val", ascending=True, inplace=True)
+    if sort_by in data.columns:
+        data.sort_values(sort_by, ascending=True, inplace=True)
+    else:
+        print("# No sorting of values performed.")
     data.to_csv(outfile_path, mode="w", sep="\t", index=None)
     return data
 
