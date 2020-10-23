@@ -4,7 +4,7 @@ A flexible, annotation-free biological data representation
 
 Copyright (c) 2020 `Tyrone Chen <https://orcid.org/0000-0002-9207-0385>`_, `Sonika Tyagi <https://orcid.org/0000-0003-0181-6258>`_.
 
-A flexible, annotation-free biological data representation.
+We thank `Yashpal Ramakrishnaiah <https://orcid.org/0000-0002-2213-8348>`_ for suggestions on improving computational efficiency.
 
 Installation
 ############
