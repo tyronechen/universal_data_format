@@ -77,7 +77,10 @@ def plot_intersection(data: dict, plot_outfile: str="upsetplot.pdf"):
         (REQUIRED) data: dict of lists, transformed with from_contents
         (OPTIONAL) plot_outfile: save the figure here
     """
-    data = UpSet(data, show_counts=True, show_percentages=True)
+    data = UpSet(data,
+                 show_counts=True,
+                 show_percentages=True,
+                 sort_categories_by=None)
     data.plot()
     if plot_outfile:
         plt.savefig(plot_outfile)
