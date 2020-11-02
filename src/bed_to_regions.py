@@ -38,7 +38,8 @@ def load_sizes(infile_path: str, header: bool=None):
 def bed_to_windows(bed: pd.DataFrame, outfile_path: str="./out.bed",
                    window_size: int=1000, hide_progress: bool=True,
                    columns: list=["chrom", "chromStart", "chromEnd",
-                                  "name", "score", "chromSize"]):
+                                  "name", "score", "chromSize"],
+                   aggregate: str=None):
     """
     Associate a coordinate-based genomic feature to a window instead.
 
@@ -48,6 +49,8 @@ def bed_to_windows(bed: pd.DataFrame, outfile_path: str="./out.bed",
         (OPTIONAL) window_size: size of windows to slice genome into
         (OPTIONAL) hide_progress: show the progress bar (DEFAULT: True)
         (OPTIONAL) columns: columns should be a normal bed file + chromSize
+        (OPTIONAL) aggregate: aggregate the score columns (DEFAULT: sum)
+            same as pandas aggregate functions, eg: [first,sum,median,mean,None]
 
     Example input:
 
@@ -141,7 +144,9 @@ def bed_to_windows(bed: pd.DataFrame, outfile_path: str="./out.bed",
             annotated.to_csv(outfile_path, sep="\t", mode="a", header=None)
 
     # add the headers back in
-    data = pd.read_csv(outfile_path, header=None, sep="\t").drop(0, axis=1)
+    data = pd.read_csv(
+        outfile_path, header=None, sep="\t", low_memory=False
+        ).drop(0, axis=1)
     data.columns = annotated.columns
 
     # sort by chromosome
@@ -152,7 +157,22 @@ def bed_to_windows(bed: pd.DataFrame, outfile_path: str="./out.bed",
         data = data.reindex(data_tmp.index)
     except:
         warnings.warn("Chromosomes not sorted numerically",category=UserWarning)
-    data.to_csv(outfile_path, mode="w", sep="\t", index=None)
+
+    data["window"] = data["chrom"].astype(str) + "_" + \
+        data["windowStart"].astype(str) + "_" + \
+        data["windowEnd"].astype(str)
+    data.set_index("window", inplace=True)
+
+    if aggregate is not None:
+        data = data.groupby(level=0).agg(
+            {"chrom": "first", "windowStart": "first", "windowEnd": "first",
+             "featureId": lambda x: ";".join(x.astype(str)),
+             "featureStart": lambda x: ";".join(x.astype(str)),
+             "featureEnd": lambda x: ";".join(x.astype(str)),
+             "featureName": lambda x: ";".join(x.astype(str)),
+             "score": "sum"}
+            )
+    data.to_csv(outfile_path, mode="w", sep="\t")#, index=None)
     return data
 
 def merge_data_sizes(data: pd.DataFrame, sizes: pd.DataFrame,
@@ -175,7 +195,9 @@ def _argument_parser():
                         help="Provide path to abundance measurements file.")
     parser.add_argument("chrom_sizes", type=str,
                         help="Provide path to chromosome sizes file.")
-    parser.add_argument("-g", "--gtf_path", type=str,
+    parser.add_argument("-a", "--aggregate", type=str, default=None,
+                        help="Aggregate scores [None,sum,median,mean,first]")
+    parser.add_argument("-g", "--gtf_path", type=str, default="sum",
                         help="Provide path to genome annotations file.")
     parser.add_argument("-o", "--outfile_path", type=str,
                         help="Provide path to output file (can be .gz).")
@@ -205,13 +227,19 @@ def main():
         os.remove(outfile_path)
 
     print("# Reproduce by running this command:")
-    print(" ".join(["python bed_to_regions.py", infile_path, chrom_sizes,
-                    "-o", outfile_path, "-t", "-p"]))
+    if args.aggregate is not None:
+        print(" ".join(["python bed_to_regions.py", infile_path, chrom_sizes,
+                        "-a", args.aggregate, "-o", outfile_path, "-p"]))
+    else:
+        print(" ".join(["python bed_to_regions.py", infile_path, chrom_sizes,
+                        "-o", outfile_path, "-p"]))
 
     data = load_bed(infile_path)
     sizes = load_sizes(chrom_sizes)
     data_sizes = merge_data_sizes(data, sizes)
-    windows = bed_to_windows(data_sizes)
+    windows = bed_to_windows(
+        data_sizes, outfile_path=outfile_path, aggregate=args.aggregate
+        )
 
 if __name__ == "__main__":
     main()
