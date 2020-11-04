@@ -79,7 +79,7 @@ def bed_to_windows(bed: pd.DataFrame, outfile_path: str="./out.bed",
         # index what we want to map to
         window_max = bed[bed[columns[0]] == chr]
         window_max = window_max[columns[-1]].unique()
-        assert len(window_max) is 1, "Chromosome can only have one size!"
+        assert len(window_max) == 1, "Chromosome can only have one size!"
         window_max = window_max[0]
 
         leftover = window_max % window_size
@@ -197,7 +197,7 @@ def _argument_parser():
                         help="Provide path to chromosome sizes file.")
     parser.add_argument("-a", "--aggregate", type=str, default=None,
                         help="Aggregate scores [None,sum,median,mean,first]")
-    parser.add_argument("-g", "--gtf_path", type=str, default="sum",
+    parser.add_argument("-g", "--gtf_path", type=str, default=None,
                         help="Provide path to genome annotations file.")
     parser.add_argument("-o", "--outfile_path", type=str,
                         help="Provide path to output file (can be .gz).")
@@ -238,7 +238,8 @@ def main():
     sizes = load_sizes(chrom_sizes)
     data_sizes = merge_data_sizes(data, sizes)
     windows = bed_to_windows(
-        data_sizes, outfile_path=outfile_path, aggregate=args.aggregate
+        data_sizes, outfile_path=outfile_path, aggregate=args.aggregate,
+        hide_progress=args.hide_progress
         )
 
 if __name__ == "__main__":
