@@ -233,10 +233,10 @@ def main():
     if args.aggregate is not None:
         print(" ".join(["python bed_to_regions.py", infile_path, chrom_sizes,
                         "-a", args.aggregate, "-o", outfile_path,
-                        "-w", window_size, "-p"]))
+                        "-w", str(window_size), "-p"]))
     else:
         print(" ".join(["python bed_to_regions.py", infile_path, chrom_sizes,
-                        "-o", outfile_path, "-w", window_size, "-p"]))
+                        "-o", outfile_path, "-w", str(window_size), "-p"]))
 
     data = load_bed(infile_path)
     sizes = load_sizes(chrom_sizes)
