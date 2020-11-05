@@ -201,6 +201,8 @@ def _argument_parser():
                         help="Provide path to genome annotations file.")
     parser.add_argument("-o", "--outfile_path", type=str,
                         help="Provide path to output file (can be .gz).")
+    parser.add_argument("-w", "--window_size", type=int, default=1000,
+                        help="Window size to break genome into (DEFAULT: 1000)")
     parser.add_argument("-p", "--hide_progress", action="store_true",
                         help="Hide the progress bar.")
     return parser.parse_args()
@@ -210,6 +212,7 @@ def main():
     infile_path = args.infile_path
     chrom_sizes = args.chrom_sizes
     outfile_path = args.outfile_path
+    window_size = args.window_size
 
     print("# No input validation is performed!")
     print("# Make sure genome size file matches genome version.")
@@ -229,17 +232,18 @@ def main():
     print("# Reproduce by running this command:")
     if args.aggregate is not None:
         print(" ".join(["python bed_to_regions.py", infile_path, chrom_sizes,
-                        "-a", args.aggregate, "-o", outfile_path, "-p"]))
+                        "-a", args.aggregate, "-o", outfile_path,
+                        "-w", window_size, "-p"]))
     else:
         print(" ".join(["python bed_to_regions.py", infile_path, chrom_sizes,
-                        "-o", outfile_path, "-p"]))
+                        "-o", outfile_path, "-w", window_size, "-p"]))
 
     data = load_bed(infile_path)
     sizes = load_sizes(chrom_sizes)
     data_sizes = merge_data_sizes(data, sizes)
     windows = bed_to_windows(
         data_sizes, outfile_path=outfile_path, aggregate=args.aggregate,
-        hide_progress=args.hide_progress
+        window_size=window_size, hide_progress=args.hide_progress
         )
 
 if __name__ == "__main__":
