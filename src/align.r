@@ -25,6 +25,8 @@ parse_argv <- function() {
                       help="Output file for abundance measurements")
     p <- add_argument(p, "--assembly", type="character", default="hg19",
                       help="Genome assembly version [hg19, hg38]")
+    p <- add_argument(p, "--nthreads", type="integer", default=1,
+                      help="Number of threads to use (DEFAULT: 1)"
     argv <- parse_args(p)
     return(argv)
 }
@@ -33,7 +35,7 @@ write_args <- function(args, argpath) {
   args <- paste("Rscript align.r \\ \n  ",
     args$targets, " \\ \n  ", args$base_name, " \\ \n  ",
     args$reference, " \\ \n  -c", args$counts_path, " \\ \n  -a",
-    args$assembly, "\n"
+    args$assembly, " \\ \n  -n", args$nthreads, "\n"
   )
   print(cat(args))
   write(args, sep="", file=argpath)
@@ -61,7 +63,8 @@ main <- function() {
     output_format="BAM",
     output_file=targets$OutputFile,
     unique=TRUE,
-    indels=5
+    indels=5,
+    nthreads=argv$nthreads,
   )
 
   # count numbers of reads mapped to NCBI Refseq genes
