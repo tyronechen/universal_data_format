@@ -26,7 +26,7 @@ parse_argv <- function() {
     p <- add_argument(p, "--assembly", type="character", default="hg19",
                       help="Genome assembly version [hg19, hg38]")
     p <- add_argument(p, "--nthreads", type="integer", default=1,
-                      help="Number of threads to use (DEFAULT: 1)"
+                      help="Number of threads to use (DEFAULT: 1)")
     argv <- parse_args(p)
     return(argv)
 }
