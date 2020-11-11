@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # take a list of counts file(s), join all into single file, rescaling if needed.
 import argparse
+import json
 import os
 import re
 import subprocess as sp
@@ -9,7 +10,8 @@ import warnings
 import numpy as np
 import pandas as pd
 
-def join_data(infile_paths: list, outfile_path: str, rescale: bool=False):
+def join_data(infile_paths: list, outfile_path: str, rescale: bool=False,
+              columns: dict=None):
     """
     Take a list of tab separated files with identical indices, join all.
 
@@ -17,6 +19,9 @@ def join_data(infile_paths: list, outfile_path: str, rescale: bool=False):
         (REQUIRED) infile_paths: list of input file paths
         (REQUIRED) outfile_path: output file path
         (OPTIONAL) rescale: if True, rescale all values to a scale of [0, 1]
+        (OPTIONAL) columns: keep these columns.
+            Example: {keep: ["col1", "col2", ... ]
+                      names: ["sample1", "sample2", ... ]}
 
     Example input:
 
@@ -35,14 +40,29 @@ def join_data(infile_paths: list, outfile_path: str, rescale: bool=False):
         FEATURE_1      1123         3402
         FEATURE_2       110          149
     """
-    all_samples = [pd.read_csv(i, sep="\t", index_col=0) for i in infile_paths]
-    all_samples = pd.concat(all_samples, axis=1)
+    data = [pd.read_csv(i, sep="\t", index_col=0) for i in infile_paths]
+    data = pd.concat(data, axis=1)
+
+    if columns:
+        if "names" in columns:
+            names = columns["names"]
+            names = [str(x) for x in names]
+        else:
+            names = [os.path.basename(i) for i in infile_paths]
+        keep = columns["keep"]
+        assert len(infile_paths) == len(names), \
+            "Sample names must match individual input files!"
+        data = data[keep]
+        newcols = [["_".join([y, x]) for y in names] for x in keep]
+        data.columns = [x for y in newcols for x in y]
+
+    # TODO: split scores and annot to separate files, test rescale
     if rescale:
-        all_samples -= all_samples.min()
-        all_samples /= all_samples.max()
-        is_empty = all_samples[(all_samples < 0) | (all_samples > 1)].dropna()
+        data -= data.min()
+        data /= data.max()
+        is_empty = data[(data < 0) | (data > 1)].dropna()
         assert is_empty.empty, "All values should be [0,1]! Check for negative?"
-    return all_samples
+    return data
 
 def join_contiguous(data: pd.DataFrame, filter_val: int=0):
     """
@@ -129,12 +149,18 @@ def _argument_parser():
                         help="Rescale values to a scale of [0,1].")
     parser.add_argument("-m", "--make_contiguous", type=int, default=None,
                         help="Join adjacent genomic regions <= filter.")
+    parser.add_argument("-s", "--split", type=str, default=None,
+                        help="Split scores from annotations. Useful if data is \
+                        already annotated and you want to keep the annotation. \
+                        \'{\"names\": [\"sample1\", ... ], \
+                        \"keep\":[\"col1\", ... ]")
     return parser.parse_args()
 
 def main():
     args = _argument_parser()
     infile_paths = args.infile_paths
     outfile_path = args.outfile_path
+    columns = args.split
 
     print("# Processing files:")
     [print("#", infile) for infile in infile_paths]
@@ -147,7 +173,11 @@ def main():
         warnings.warn("# Output file exists, overwriting!", category=UserWarning)
         os.remove(outfile_path)
 
-    data = join_data(infile_paths, outfile_path, rescale=args.rescale)
+    if columns:
+        columns = json.loads(columns)
+    data = join_data(infile_paths, outfile_path, rescale=args.rescale,
+                     columns=columns)
+
     if not args.make_contiguous is None:
         data = join_contiguous(data, filter_val=args.make_contiguous)
 
@@ -158,10 +188,12 @@ def main():
     print("# Reproduce by running this command:")
     if args.rescale:
         print("python join_counts.py", " ".join(infile_paths),
-              "-o", outfile_path, "-r", "-m", args.make_contiguous)
+              "-o", outfile_path, "-r", "-m", args.make_contiguous,
+              "-s", columns)
     else:
         print("python join_counts.py", " ".join(infile_paths),
-              "-o", outfile_path, "-m", args.make_contiguous)
+              "-o", outfile_path, "-m", args.make_contiguous,
+              "-s", columns)
 
 if __name__ == "__main__":
     main()
