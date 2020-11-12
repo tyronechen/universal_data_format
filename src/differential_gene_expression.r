@@ -37,8 +37,8 @@ write_args <- function(args, argpath) {
 main <- function() {
   argv <- parse_argv()
   dir.create(file.path(argv$outfile_dir))
-  write_args(argv, paste(argv$outfile_dir, "/", argv$names, ".r", sep=""))
-  pdf(paste(argv$outfile_dir, "/", argv$names, ".pdf", sep=""))
+  write_args(argv, paste(argv$outfile_dir, "/", basename(argv$names), ".r", sep=""))
+  pdf(paste(argv$outfile_dir, "/", basename(argv$names), ".pdf", sep=""))
   targets <- readTargets(argv$targets)
 
   # create a design matrix, first column must be treatment condition
@@ -47,6 +47,9 @@ main <- function() {
 
   # count numbers of reads mapped to NCBI Refseq genes
   data <- read.table(argv$infile, sep="\t")
+  
+  # for now any NA values are assumed to have 0 coverage
+  data[is.na(data)] = 0
   dge <- DGEList(counts=data)
 
   # filter out low-count genes
@@ -63,7 +66,8 @@ main <- function() {
   fit <- eBayes(lmFit(voomed, design))
 
   write.table(topTable(fit, number=Inf, sort.by="P", coef=2), sep="\t",
-    file=paste(argv$outfile_dir, "/", argv$names, ".top.tsv", sep=""), quote=F
+    file=paste(argv$outfile_dir, "/", basename(argv$names), ".top.tsv", sep=""), 
+    quote=F
   )
   dev.off()
 }
