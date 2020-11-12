@@ -27,6 +27,8 @@ parse_argv <- function() {
                       help="Genome assembly version [hg19, hg38]")
     p <- add_argument(p, "--nthreads", type="integer", default=1,
                       help="Number of threads to use (DEFAULT: 1)")
+    p <- add_argument(p, "--mem", type="integer", default=16000,
+                      help="Amount of memory (MB) to use (DEFAULT: 16000)")
     argv <- parse_args(p)
     return(argv)
 }
@@ -35,7 +37,8 @@ write_args <- function(args, argpath) {
   args <- paste("Rscript align.r \\ \n  ",
     args$targets, " \\ \n  ", args$base_name, " \\ \n  ",
     args$reference, " \\ \n  -c", args$counts_path, " \\ \n  -a",
-    args$assembly, " \\ \n  -n", args$nthreads, "\n"
+    args$assembly, " \\ \n  -n", args$nthreads, " \\ \n  -m",
+    args$mem, "\n"
   )
   print(cat(args))
   write(args, sep="", file=argpath)
@@ -53,8 +56,14 @@ main <- function() {
   # build an index for reference sequence (Chr1 in hg19)
   original_dir <- getwd()
   setwd(dirname(argv$reference))
-  buildindex(basename=argv$base_name, reference=basename(argv$reference))
-
+  
+  # if index exists
+  suffixes <- paste(argv$base_name, c("00.b.array", "00.b.tab", "reads", "files"), sep=".")
+  if ( !all(file.exists(suffixes)) ) {
+    print("No subread index matching that name found, building new subread index...")
+    buildindex(basename=argv$base_name, reference=basename(argv$reference), memory=argv$mem)
+  }
+  
   # align reads
   align(
     index=argv$base_name,
