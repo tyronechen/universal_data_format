@@ -49,6 +49,7 @@ def join_data(infile_paths: list, outfile_path: str, rescale: bool=False,
             names = [str(x) for x in names]
         else:
             names = [os.path.basename(i) for i in infile_paths]
+            names = [i.split("_")[0] for i in names if i.startswith("GSM")]
         keep = columns["keep"]
         assert len(infile_paths) == len(names), \
             "Sample names must match individual input files!"
