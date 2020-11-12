@@ -52,12 +52,25 @@ def join_data(infile_paths: list, outfile_path: str, rescale: bool=False,
             names = [i.split("_")[0] for i in names if i.startswith("GSM")]
         keep = columns["keep"]
         assert len(infile_paths) == len(names), \
-            "Sample names must match individual input files!"
+            "Number of sample names must match number of input files!"
         data = data[keep]
-        newcols = [["_".join([y, x]) for y in names] for x in keep]
-        data.columns = [x for y in newcols for x in y]
 
-    # TODO: split scores and annot to separate files, test rescale
+        # the first column series contains scores, set sample name as header
+        newcols = [["_".join([y, x]) for y in names] for x in keep[1:]]
+        newcols = [x for y in newcols for x in y]
+        newcols = names + newcols
+        data.columns = newcols
+
+        # counts and annotations should be separate, row ids same for rejoining
+        outfile_path_annot = ".".join([outfile_path, "annot"])
+        annots = pd.concat([data.filter(regex=i, axis=1) for i in keep[1:]])
+        annots.to_csv(outfile_path_annot, sep="\t")
+
+        # will pass to R which requires a highly specific dataframe input format
+        sp.call("".join(["perl -pi -e \'s/^\t//\' ", outfile_path_annot]), shell=True)
+        print("# Writing annotations file to:", outfile_path_annot)
+        data = data[names]
+
     if rescale:
         data -= data.min()
         data /= data.max()
@@ -93,6 +106,7 @@ def join_contiguous(data: pd.DataFrame, filter_val: int=0):
         chr1_401_600           0            0   ...
 
     """
+    # TODO: placeholder, nonfunctional!
     is_contig = ((data > filter_val).sum(axis=1) > 0)
     not_contig = ((data <= filter_val).sum(axis=1) == data.shape[1])
 
