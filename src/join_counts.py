@@ -163,12 +163,15 @@ def _argument_parser():
     parser.add_argument("-r", "--rescale", action="store_true",
                         help="Rescale values to a scale of [0,1].")
     parser.add_argument("-m", "--make_contiguous", type=int, default=None,
-                        help="Join adjacent genomic regions <= filter.")
+                        help="Join adjacent genomic regions <= filter.\
+                        (not yet supported, will be added in future)")
     parser.add_argument("-s", "--split", type=str, default=None,
                         help="Split scores from annotations. Useful if data is \
                         already annotated and you want to keep the annotation. \
+                        If this option is enabled, annotations will be written \
+                        to outfile_path.annot. Sample argument: \
                         \'{\"names\": [\"sample1\", ... ], \
-                        \"keep\":[\"col1\", ... ]")
+                        \"keep\":[\"col1\", ... ]}\'")
     return parser.parse_args()
 
 def main():
