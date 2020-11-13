@@ -33,7 +33,7 @@ parse_argv <- function() {
                       default="./counts.tsv",
                       help="Output file for abundance measurements.")
     p <- add_argument(p, "--assembly", type="character", default="hg19",
-                      help="Genome assembly version [hg19, hg38].")
+                      help="Genome assembly version [mm9, mm10, hg19, hg38].")
     p <- add_argument(p, "--nthreads", type="integer", default=1,
                       help="Number of threads to use.")
     p <- add_argument(p, "--mem", type="integer", default=16000,
@@ -43,14 +43,22 @@ parse_argv <- function() {
 }
 
 write_args <- function(args, argpath) {
-  args <- paste("Rscript align.r \\ \n  ",
-    args$targets, " \\ \n  ", args$base_name, " \\ \n  ",
-    args$reference, " \\ \n  -g", args$gtf_annot, " \\ \n  -c",
-    args$counts_path, " \\ \n  -a", args$assembly, "\\ \n -t",
-    args$featuretype, " \\ \n  -n", args$nthreads, " \\ \n  -m", args$mem, "\n"
-  )
-  if ( argv$featurecount_multimap == TRUE ) {
-    args <- paste(args, " \\ \n  --featurecount_multimap \n")
+  if ( args$featurecount_multimap == TRUE ) {
+    args <- paste("Rscript align.r \\ \n  ",
+      args$targets, " \\ \n  ", args$base_name, " \\ \n  ",
+      args$reference, " \\ \n  -g", args$gtf_annot, " \\ \n  -c",
+      args$counts_path, " \\ \n  -a", args$assembly, "\\ \n -t",
+      args$featuretype, " \\ \n  -n", args$nthreads, " \\ \n  -m",
+      args$mem, " \\ \n  --featurecount_multimap"
+    )
+  } else {
+    args <- paste("Rscript align.r \\ \n  ",
+      args$targets, " \\ \n  ", args$base_name, " \\ \n  ",
+      args$reference, " \\ \n  -g", args$gtf_annot, " \\ \n  -c",
+      args$counts_path, " \\ \n  -a", args$assembly, "\\ \n -t",
+      args$featuretype, " \\ \n  -n", args$nthreads, " \\ \n  -m",
+      args$mem, " \n"
+    )
   }
   print(cat(args))
   write(args, sep="", file=argpath)
@@ -61,6 +69,8 @@ main <- function() {
   dir.create(file.path(dirname(argv$counts_path)))
   write_args(argv, paste(argv$counts_path, ".r", sep=""))
 
+  print("foo")
+
   # read in target file
   options(digits=2)
   targets <- readTargets(argv$targets)
@@ -70,29 +80,43 @@ main <- function() {
   setwd(dirname(argv$reference))
 
   # if index exists
-  suffixes <- paste(argv$base_name, c("00.b.array", "00.b.tab", "reads", "files"), sep=".")
+  suffixes <- paste(
+    argv$base_name, c("00.b.array", "00.b.tab", "reads", "files"), sep="."
+  )
   if ( !all(file.exists(suffixes)) ) {
-    print("No subread index matching that name found, building new subread index...")
-    buildindex(basename=argv$base_name, reference=basename(argv$reference), memory=argv$mem)
+    print("# No subread index matching that name found, building new index...")
+    buildindex(
+      basename=argv$base_name,
+      reference=basename(argv$reference),
+      memory=argv$mem
+    )
   }
 
-  # align reads
-  align(
-    index=argv$base_name,
-    readfile1=targets$InputFile,
-    readfile2=targets$InputFile2,
-    input_format="gzFASTQ",
-    output_format="BAM",
-    output_file=targets$OutputFile,
-    unique=TRUE,
-    indels=5,
-    nthreads=argv$nthreads,
-  )
+  # if reads exist, dont need to realign
+  if ( !all(file.exists(targets$OutputFile)) ) {
+    # align reads
+    align(
+      index=argv$base_name,
+      readfile1=targets$InputFile,
+      readfile2=targets$InputFile2,
+      input_format="gzFASTQ",
+      output_format="BAM",
+      output_file=targets$OutputFile,
+      unique=TRUE,
+      indels=5,
+      nthreads=argv$nthreads,
+    )
+  } else {
+    print("# Found files matching names in OutputFile column of targets file.")
+    print("# Skipping alignment. Move or rename these files for new alignment.")
+  }
 
+  # paired end reads are quantified differently in featureCounts
   if ( !is.null(targets$InputFile) & !is.null(targets$InputFile2) ) {
     isPairedEnd <- TRUE
   } else {isPairedEnd <- FALSE}
 
+  # inbuilt subread annotations only include a few versions
   if ( !argv$assembly %in% c("mm9", "mm10", "hg19", "hg38") ) {
     argv$assembly <- NULL
   }
