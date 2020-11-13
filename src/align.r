@@ -69,8 +69,6 @@ main <- function() {
   dir.create(file.path(dirname(argv$counts_path)))
   write_args(argv, paste(argv$counts_path, ".r", sep=""))
 
-  print("foo")
-
   # read in target file
   options(digits=2)
   targets <- readTargets(argv$targets)
@@ -133,9 +131,8 @@ main <- function() {
     nthreads=argv$nthreads
   )
   setwd(original_dir)
-  write.table(fc$counts, sep="\t", quote=F,
-    file=paste(argv$outfile_dir, "/", argv$counts_path, ".tsv", sep="")
-  )
+  save(fc, file=paste(argv$counts_path, ".RData", sep=""))
+  write.table(fc$counts, sep="\t", quote=F, file=paste(argv$counts_path,sep=""))
 }
 
 main()
