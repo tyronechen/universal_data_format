@@ -14,7 +14,8 @@ parse_argv <- function() {
     p <- arg_parser("Align reads into bam files and export abundance measures.")
     p <- add_argument(p, "targets", type="character",
                       help="Sample information. Must include file paths \
-                      in column InputFile and OutputFile!")
+                      in column InputFile and OutputFile! If paired-end reads, \
+                      include column InputFile2.")
     p <- add_argument(p, "base_name", type="character",
                       help="Base name for index, eg human_hg19")
     p <- add_argument(p, "reference", type="character",
@@ -56,18 +57,19 @@ main <- function() {
   # build an index for reference sequence (Chr1 in hg19)
   original_dir <- getwd()
   setwd(dirname(argv$reference))
-  
+
   # if index exists
   suffixes <- paste(argv$base_name, c("00.b.array", "00.b.tab", "reads", "files"), sep=".")
   if ( !all(file.exists(suffixes)) ) {
     print("No subread index matching that name found, building new subread index...")
     buildindex(basename=argv$base_name, reference=basename(argv$reference), memory=argv$mem)
   }
-  
+
   # align reads
   align(
     index=argv$base_name,
     readfile1=targets$InputFile,
+    readfile2=targets$InputFile2
     input_format="gzFASTQ",
     output_format="BAM",
     output_file=targets$OutputFile,
