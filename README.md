@@ -1,5 +1,7 @@
 # A flexible, annotation-free biological data representation
 
+> NOTE: [The main repository is on gitlab](https://gitlab.com/tyagilab/universal_data_format). It is also [mirrored on github](https://github.com/tyronechen/universal_data_format) but please submit any issues to the main gitlab repository only.
+
 Copyright (c) 2020-2021 <a href="https://orcid.org/0000-0002-9207-0385">Tyrone Chen <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>, <a href="https://orcid.org/0000-0003-0181-6258">Sonika Tyagi <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>
 
 ## Contents
