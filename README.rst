@@ -2,12 +2,24 @@
 A flexible, annotation-free biological data representation
 ##########################################################
 
-Copyright (c) 2020 `Tyrone Chen <https://orcid.org/0000-0002-9207-0385>`_, `Sonika Tyagi <https://orcid.org/0000-0003-0181-6258>`_.
+.. raw:: html
 
-We thank `Yashpal Ramakrishnaiah <https://orcid.org/0000-0002-2213-8348>`_ for suggestions on improving computational efficiency.
+  Copyright (c) 2020-2021 <a href="https://orcid.org/0000-0002-9207-0385">Tyrone Chen <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>, <a href="https://orcid.org/0000-0003-0181-6258">Sonika Tyagi <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>
+
+  <p>We thank <a href="https://orcid.org/0000-0002-2213-8348">Yashpal Ramakrishnaiah <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a> for suggestions on improving computational efficiency.</p>
 
 Installation
 ############
+
+Quick install
++++++++++++++
+
+With docker and singularity:
+
+*To be written*
+
+Conda install
++++++++++++++
 
 With conda::
 
@@ -19,6 +31,9 @@ With conda::
     bedtools samtools \
     --channel conda-forge --channel bioconda --channel r
   conda activate <add_your_channel_name_here>
+
+Manual install
+++++++++++++++
 
 Manual install::
 
@@ -39,6 +54,8 @@ Manual install::
 
 Usage
 #####
+
+*To be written*
 
 Software availability
 #####################
