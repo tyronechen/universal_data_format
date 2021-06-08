@@ -8,15 +8,15 @@ Copyright (c) 2020-2021 <a href="https://orcid.org/0000-0002-9207-0385">Tyrone C
 
 ## Acknowledgements
 
-<p>We thank <a href="https://orcid.org/0000-0002-2213-8348">Yashpal Ramakrishnaiah <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a> for suggestions on improving computational efficiency.</p>
+We thank <a href="https://orcid.org/0000-0002-2213-8348">Yashpal Ramakrishnaiah <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a> for suggestions on improving computational efficiency.
 
 ## Software availability
 
-All steps, code, parameters, command line arguments and software versions used to generate results in this paper are publicly available in an open source software repository under the `MIT license <https://opensource.org/licenses/MIT>`_, hosted on gitlab at `https://gitlab.com/tyagilab/universal_data_format <https://gitlab.com/tyagilab/universal_data_format>`_. This documentation is provided under a `CC-BY-3.0 AU license <https://creativecommons.org/licenses/by/3.0/au/>`_.
+All steps, code, parameters, command line arguments and software versions used to generate results in this paper are publicly available in an open source software repository under the [MIT license](https://opensource.org/licenses/MIT), hosted on gitlab at [https://gitlab.com/tyagilab/universal_data_format](https://gitlab.com/tyagilab/universal_data_format). This documentation is provided under a [CC-BY-3.0 AU license](https://creativecommons.org/licenses/by/3.0/au/).
 
 ## About us
 
-`Visit our lab website here <https://bioinformaticslab.erc.monash.edu/>`_. Contact Sonika Tyagi at `sonika.tyagi@monash.edu <mailto:sonika.tyagi@monash.edu>`_.
+[Visit our lab website here](https://bioinformaticslab.erc.monash.edu/). Contact Sonika Tyagi at [sonika.tyagi@monash.edu](mailto:sonika.tyagi@monash.edu).
 
 ## Installation
 
