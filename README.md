@@ -1,25 +1,32 @@
-##########################################################
-A flexible, annotation-free biological data representation
-##########################################################
+# A flexible, annotation-free biological data representation
 
-.. raw:: html
+Copyright (c) 2020-2021 <a href="https://orcid.org/0000-0002-9207-0385">Tyrone Chen <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>, <a href="https://orcid.org/0000-0003-0181-6258">Sonika Tyagi <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>
 
-  Copyright (c) 2020-2021 <a href="https://orcid.org/0000-0002-9207-0385">Tyrone Chen <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>, <a href="https://orcid.org/0000-0003-0181-6258">Sonika Tyagi <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>
+## Contents
 
-  <p>We thank <a href="https://orcid.org/0000-0002-2213-8348">Yashpal Ramakrishnaiah <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a> for suggestions on improving computational efficiency.</p>
+[[_TOC_]]
 
-Installation
-############
+## Acknowledgements
 
-Quick install
-+++++++++++++
+<p>We thank <a href="https://orcid.org/0000-0002-2213-8348">Yashpal Ramakrishnaiah <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a> for suggestions on improving computational efficiency.</p>
+
+## Software availability
+
+All steps, code, parameters, command line arguments and software versions used to generate results in this paper are publicly available in an open source software repository under the `MIT license <https://opensource.org/licenses/MIT>`_, hosted on gitlab at `https://gitlab.com/tyagilab/universal_data_format <https://gitlab.com/tyagilab/universal_data_format>`_. This documentation is provided under a `CC-BY-3.0 AU license <https://creativecommons.org/licenses/by/3.0/au/>`_.
+
+## About us
+
+`Visit our lab website here <https://bioinformaticslab.erc.monash.edu/>`_. Contact Sonika Tyagi at `sonika.tyagi@monash.edu <mailto:sonika.tyagi@monash.edu>`_.
+
+## Installation
+
+### Quick install
 
 With docker and singularity:
 
 *To be written*
 
-Conda install
-+++++++++++++
+### Conda install
 
 With conda::
 
@@ -32,8 +39,7 @@ With conda::
     --channel conda-forge --channel bioconda --channel r
   conda activate <add_your_channel_name_here>
 
-Manual install
-++++++++++++++
+### Manual install
 
 Manual install::
 
@@ -52,17 +58,6 @@ Manual install::
   # for samtools, follow the instructions here:
   http://www.htslib.org/download/
 
-Usage
-#####
+## Usage
 
 *To be written*
-
-Software availability
-#####################
-
-All steps, code, parameters, command line arguments and software versions used to generate results in this paper are publicly available in an open source software repository under the `MIT license <https://opensource.org/licenses/MIT>`_, hosted on gitlab at `https://gitlab.com/tyagilab/universal_data_format <https://gitlab.com/tyagilab/universal_data_format>`_. This documentation is provided under a `CC-BY-3.0 AU license <https://creativecommons.org/licenses/by/3.0/au/>`_.
-
-About us
-########
-
-`Visit our lab website here <https://bioinformaticslab.erc.monash.edu/>`_. Contact Sonika Tyagi at `sonika.tyagi@monash.edu <mailto:sonika.tyagi@monash.edu>`_.
