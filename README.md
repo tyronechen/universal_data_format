@@ -28,8 +28,9 @@ With docker and singularity:
 
 ### Conda install
 
-With conda::
+With conda:
 
+```
   git clone "https://gitlab.com/tyagilab/universal_data_format"
   conda create -n <add_your_channel_name_here> \
     pandas tqdm pyfaidx intervaltree \
@@ -38,11 +39,13 @@ With conda::
     bedtools samtools \
     --channel conda-forge --channel bioconda --channel r
   conda activate <add_your_channel_name_here>
+```
 
 ### Manual install
 
-Manual install::
+Manual install:
 
+```
   # R packages (within R)
   source("http://bioconductor.org/biocLite.R")
   biocLite(pkgs = c("Rsubread","limma","edgeR"))
@@ -57,6 +60,7 @@ Manual install::
 
   # for samtools, follow the instructions here:
   http://www.htslib.org/download/
+```
 
 ## Usage
 
