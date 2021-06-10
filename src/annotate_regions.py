@@ -7,8 +7,46 @@ import subprocess as sp
 from time import time
 import warnings
 from intervaltree import Interval, IntervalTree
+# from numba import njit, prange, set_num_threads
 import pandas as pd
 from tqdm import tqdm
+
+def _argument_parser():
+    parser = argparse.ArgumentParser(description=
+        "Annotate a table of genomic regions with a gtf file. Can take gzip. \
+        No input validation is performed! \
+        Usage: python annotate_regions.py </path/to/data.tsv> </path/to/gtf> \
+            -o [/path/to/out.tsv]"
+        )
+    parser.add_argument("infile_path", type=str,
+                        help="Provide path to abundance measurements file.")
+    parser.add_argument("gtf_path", type=str,
+                        help="Provide path to genome annotations file.")
+    parser.add_argument("-o", "--outfile_path", type=str,
+                        help="Provide path to output file (can be .gz).")
+    parser.add_argument("-t", "--threshold", type=float, default=0.05,
+                        help="Filter on adjusted pval threshold (if DEG list).")
+    # parser.add_argument("-n", "--ncpus", type=int, default=1,
+    #                     help="Specify number of cpus for parallelising \
+    #                     operations. (default 1)")
+    parser.add_argument("-p", "--hide_progress", action="store_true",
+                        help="Hide the progress bar.")
+    parser.add_argument("-l", "--lowmem", action="store_true",
+                        help="Very slow annotation but requires less memory. \
+                        Dont use this unless necessary, O(m x n) from O(n)!")
+    return parser.parse_args()
+
+def check_parallel():
+    args = _argument_parser()
+    infile_paths = args.infile_paths
+    if  args.ncpus > 1:
+        do_parallel = True
+    else:
+        do_parallel = False
+    return args.ncpus, do_parallel
+
+# ncpus, do_parallel = check_parallel()
+# set_num_threads(ncpus)
 
 def load_regions(infile_path: str):
     """
@@ -209,28 +247,6 @@ def annotate_regions_highmem(abundance: pd.DataFrame, gtf: pd.DataFrame,
         print("# No sorting of values performed.")
     data.to_csv(outfile_path, mode="w", sep="\t", index=None)
     return data
-
-def _argument_parser():
-    parser = argparse.ArgumentParser(description=
-        "Annotate a table of genomic regions with a gtf file. Can take gzip. \
-        No input validation is performed! \
-        Usage: python annotate_regions.py </path/to/data.tsv> </path/to/gtf> \
-            -o [/path/to/out.tsv]"
-        )
-    parser.add_argument("infile_path", type=str,
-                        help="Provide path to abundance measurements file.")
-    parser.add_argument("gtf_path", type=str,
-                        help="Provide path to genome annotations file.")
-    parser.add_argument("-o", "--outfile_path", type=str,
-                        help="Provide path to output file (can be .gz).")
-    parser.add_argument("-t", "--threshold", type=float, default=0.05,
-                        help="Filter on adjusted pval threshold (if DEG list).")
-    parser.add_argument("-p", "--hide_progress", action="store_true",
-                        help="Hide the progress bar.")
-    parser.add_argument("-l", "--lowmem", action="store_true",
-                        help="Very slow annotation but requires less memory. \
-                        Dont use this unless necessary, O(m x n) from O(n)!")
-    return parser.parse_args()
 
 def main():
     args = _argument_parser()

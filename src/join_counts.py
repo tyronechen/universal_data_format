@@ -7,8 +7,48 @@ import re
 import subprocess as sp
 from time import time
 import warnings
+# from numba import njit, prange, set_num_threads
 import numpy as np
 import pandas as pd
+
+def _argument_parser():
+    parser = argparse.ArgumentParser(description=
+        "Join tsv files corresponding to individual samples. \
+        Usage: python join_counts.py </path/to/data/*.tsv> ... \
+            -o [/path/to/out.tsv]"
+        )
+    parser.add_argument("infile_paths", type=str, nargs='+',
+                        help="Provide path to multiple abundance files.")
+    parser.add_argument("-o", "--outfile_path", type=str,
+                        help="Provide path to output file.")
+    parser.add_argument("-r", "--rescale", action="store_true",
+                        help="Rescale values to a scale of [0,1].")
+    parser.add_argument("-m", "--make_contiguous", type=int, default=None,
+                        help="Join adjacent genomic regions <= filter.\
+                        (not yet supported, will be added in future)")
+    # parser.add_argument("-n", "--ncpus", type=int, default=1,
+    #                     help="Specify number of cpus for parallelising \
+    #                     operations. (default 1)")
+    parser.add_argument("-s", "--split", type=str, default=None,
+                        help="Split scores from annotations. Useful if data is \
+                        already annotated and you want to keep the annotation. \
+                        If this option is enabled, annotations will be written \
+                        to outfile_path.annot. Sample argument: \
+                        \'{\"names\": [\"sample1\", ... ], \
+                        \"keep\":[\"col1\", ... ]}\'")
+    return parser.parse_args()
+
+def check_parallel():
+    args = _argument_parser()
+    infile_paths = args.infile_paths
+    if  args.ncpus > 1:
+        do_parallel = True
+    else:
+        do_parallel = False
+    return args.ncpus, do_parallel
+
+# ncpus, do_parallel = check_parallel()
+# set_num_threads(ncpus)
 
 def join_data(infile_paths: list, outfile_path: str, rescale: bool=False,
               columns: dict=None):
@@ -149,30 +189,6 @@ def combine_contigs(data: pd.DataFrame, contig_indices: np.ndarray):
     data = pd.DataFrame(data).T
     data.index = [index]
     return data
-
-def _argument_parser():
-    parser = argparse.ArgumentParser(description=
-        "Join tsv files corresponding to individual samples. \
-        Usage: python join_counts.py </path/to/data/*.tsv> ... \
-            -o [/path/to/out.tsv]"
-        )
-    parser.add_argument("infile_paths", type=str, nargs='+',
-                        help="Provide path to multiple abundance files.")
-    parser.add_argument("-o", "--outfile_path", type=str,
-                        help="Provide path to output file.")
-    parser.add_argument("-r", "--rescale", action="store_true",
-                        help="Rescale values to a scale of [0,1].")
-    parser.add_argument("-m", "--make_contiguous", type=int, default=None,
-                        help="Join adjacent genomic regions <= filter.\
-                        (not yet supported, will be added in future)")
-    parser.add_argument("-s", "--split", type=str, default=None,
-                        help="Split scores from annotations. Useful if data is \
-                        already annotated and you want to keep the annotation. \
-                        If this option is enabled, annotations will be written \
-                        to outfile_path.annot. Sample argument: \
-                        \'{\"names\": [\"sample1\", ... ], \
-                        \"keep\":[\"col1\", ... ]}\'")
-    return parser.parse_args()
 
 def main():
     args = _argument_parser()

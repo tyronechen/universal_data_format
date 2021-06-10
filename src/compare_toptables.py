@@ -7,9 +7,51 @@ import subprocess as sp
 from time import time
 import warnings
 import matplotlib.pyplot as plt
+# from numba import njit, prange, set_num_threads
 import pandas as pd
 from tqdm import tqdm
 from upsetplot import from_contents, UpSet
+
+def _argument_parser():
+    timestamp = str(int(time()))
+    parser = argparse.ArgumentParser(description=
+        """
+        Compare and contrast the attributes of multiple differentially
+        expressed gene lists. No input validation is performed!
+        Usage: python compare_toptables.py </path/to/original.tsv>
+            </path/to/data.tsv> ... -o [/path/to/out.pdf]
+        """
+    )
+    parser.add_argument("reference_path", type=str,
+                        help="Provide path to reference toptables file. \
+                        Must have gene name or identifier as column or index!")
+    parser.add_argument("infile_paths", type=str, nargs="+",
+                        help="Provide path to other toptables files. \
+                        Must have gtf-like attribute annotation fields!")
+    parser.add_argument("-p", "--plot_outfile", type=str,
+                        default=".".join(["upset", timestamp, "pdf"]),
+                        help="Provide path to output image file [eps/pdf/png].")
+    parser.add_argument("-s", "--sets_outfile", type=str,
+                        default=".".join(["upset", timestamp, "tsv"]),
+                        help="Provide path to output set membership files.")
+    # parser.add_argument("-n", "--ncpus", type=int, default=1,
+    #                     help="Specify number of cpus for parallelising \
+    #                     operations. (default 1)")
+    parser.add_argument("-t", "--threshold", type=float, default=0.05,
+                        help="Filter on adjusted pval threshold.")
+    return parser.parse_args()
+
+def check_parallel():
+    args = _argument_parser()
+    infile_paths = args.infile_paths
+    if  args.ncpus > 1:
+        do_parallel = True
+    else:
+        do_parallel = False
+    return args.ncpus, do_parallel
+
+# ncpus, do_parallel = check_parallel()
+# set_num_threads(ncpus)
 
 def load_filter_regions(infile_path: str, filter_col: str="adj.P.Val",
                         filter_val: float=0.05):
@@ -101,32 +143,6 @@ def get_intersection(data: dict, sets_outfile: str="upsetplot.tsv"):
         memberships["present_in_sets"] = memberships.sum(axis=1)
         memberships.to_csv(sets_outfile, sep="\t")
     return data
-
-def _argument_parser():
-    timestamp = str(int(time()))
-    parser = argparse.ArgumentParser(description=
-        """
-        Compare and contrast the attributes of multiple differentially
-        expressed gene lists. No input validation is performed!
-        Usage: python compare_toptables.py </path/to/original.tsv>
-            </path/to/data.tsv> ... -o [/path/to/out.pdf]
-        """
-    )
-    parser.add_argument("reference_path", type=str,
-                        help="Provide path to reference toptables file. \
-                        Must have gene name or identifier as column or index!")
-    parser.add_argument("infile_paths", type=str, nargs="+",
-                        help="Provide path to other toptables files. \
-                        Must have gtf-like attribute annotation fields!")
-    parser.add_argument("-p", "--plot_outfile", type=str,
-                        default=".".join(["upset", timestamp, "pdf"]),
-                        help="Provide path to output image file [eps/pdf/png].")
-    parser.add_argument("-s", "--sets_outfile", type=str,
-                        default=".".join(["upset", timestamp, "tsv"]),
-                        help="Provide path to output set membership files.")
-    parser.add_argument("-t", "--threshold", type=float, default=0.05,
-                        help="Filter on adjusted pval threshold.")
-    return parser.parse_args()
 
 def main():
     args = _argument_parser()
