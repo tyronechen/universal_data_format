@@ -1,0 +1,24 @@
+R version 3.5.1 (2018-07-02)
+Platform: x86_64-apple-darwin13.4.0 (64-bit)
+Running under: macOS  10.15.7
+
+Matrix products: default
+BLAS/LAPACK: /Users/tche0054/miniconda3/envs/format/lib/R/lib/libRblas.dylib
+
+locale:
+[1] en_AU.UTF-8/en_AU.UTF-8/en_AU.UTF-8/C/en_AU.UTF-8/en_AU.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base
+
+other attached packages:
+[1] edgeR_3.22.5    limma_3.36.5    Rsubread_1.30.9 ggplot2_3.0.0
+
+loaded via a namespace (and not attached):
+ [1] locfit_1.5-9.4   Rcpp_0.12.18     lattice_0.20-35  withr_2.1.2
+ [5] crayon_1.3.4     dplyr_0.7.6      assertthat_0.2.0 grid_3.5.1
+ [9] plyr_1.8.4       R6_2.2.2         gtable_0.2.0     magrittr_1.5
+[13] scales_0.5.0     pillar_1.3.0     rlang_0.2.1      lazyeval_0.2.1
+[17] bindrcpp_0.2.2   glue_1.3.0       purrr_0.2.5      munsell_0.5.0
+[21] compiler_3.5.1   pkgconfig_2.0.1  colorspace_1.3-2 tidyselect_0.2.4
+[25] bindr_0.1.1      tibble_1.4.2
