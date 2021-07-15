@@ -53,7 +53,7 @@ df_out$group <- sapply(
 )
 df_out$group <- sapply( strsplit(df_out$group, "_", fixed=TRUE), "[[", 1 )
 
-p <- ggplot(df_out, aes(x=PC1, y=PC2, color=group)) + geom_point() + theme_bw()
+p <- ggplot(df_out, aes(x=PC1, y=PC2, color=group)) + geom_point(size=8) + theme_bw()
 ggsave("../../results/ismb_plots_2021/original.pca.pdf", p)
 
 # clear environment to avoid variable clash
@@ -83,5 +83,5 @@ y <- prcomp(t(x_cpm), scale=TRUE)
 df_out <- as.data.frame(y$x)
 df_out$group <- sapply( strsplit(row.names(df_out), "_", fixed=TRUE), "[[", 1 )
 
-p <- ggplot(df_out, aes(x=PC1, y=PC2, color=group)) + geom_point() + theme_bw()
+p <- ggplot(df_out, aes(x=PC1, y=PC2, color=group)) + geom_point(size=8) + theme_bw()
 ggsave("../../results/ismb_plots_2021/reformat.pca.pdf", p)
