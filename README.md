@@ -4,6 +4,8 @@
 
 Copyright (c) 2020-2021 <a href="https://orcid.org/0000-0002-9207-0385">Tyrone Chen <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>, <a href="https://orcid.org/0000-0003-0181-6258">Sonika Tyagi <img alt="ORCID logo" src="https://info.orcid.org/wp-content/uploads/2019/11/orcid_16x16.png" width="16" height="16" /></a>
 
+Chen T and Tyagi S. An annotation-free format for representing multimodal data features  [version 1; not peer reviewed]. F1000Research 2021, 10(ISCB Comm J):657 (poster) [(https://doi.org/10.7490/f1000research.1118642.1)](https://doi.org/10.7490/f1000research.1118642.1) 
+
 ## Contents
 
 [[_TOC_]]
