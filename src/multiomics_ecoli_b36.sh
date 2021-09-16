@@ -1,12 +1,14 @@
 Rscript run_pipeline.R \
-   --classes ../data/sepsis/targets.tsv \
+   --classes ../data/sepsis/ecoli_b36/targets.tsv \
    --corr_cutoff 0.95 \
    --cross_val Mfold \
    --cross_val_folds 2 \
    --cross_val_nrepeat 10 \
    --dropna_classes FALSE \
    --dropna_prop 0 \
-   --data ../data/sepsis/Metabolomics.tsv ../data/sepsis/Proteomics.tsv ../data/sepsis/Transcriptomics.tsv \
+   --data ../data/sepsis/ecoli_b36/Metabolomics.tsv \
+      ../data/sepsis/ecoli_b36/Proteomics.tsv \
+      ../data/sepsis/ecoli_b36/Transcriptomics.tsv \
    --data_names metabolome proteome transcriptome \
    --force_unique FALSE \
    --ncpus 1 \
