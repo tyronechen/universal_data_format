@@ -15,14 +15,14 @@ Rscript run_pipeline.R \
    --ncpus 6 \
    --diablocomp 4 \
    --linkage 0.1 \
-   --diablo_keepx 5 10 15 30 \
+   --diablo_keepx 10 15 20 30 \
    --icomp 0 \
    --zero_as_na TRUE \
    --replace_missing TRUE \
    --pcomp 10 \
    --plsdacomp 4 \
    --splsdacomp 4 \
-   --splsda_keepx 5 10 15 30 \
+   --splsda_keepx 10 15 20 30 \
    --dist_plsda mahalanobis.dist \
    --dist_splsda mahalanobis.dist \
    --dist_diablo mahalanobis.dist \

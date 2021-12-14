@@ -6,10 +6,12 @@ Rscript run_pipeline.R \
    --cross_val_nrepeat 10 \
    --dropna_classes FALSE \
    --dropna_prop 0 \
-   --data ../data/sepsis/Ecoli_B36/Metabolomics.tsv \
+   --data \
+      ../data/sepsis/Ecoli_B36/Genomics.tsv \
+      ../data/sepsis/Ecoli_B36/Metabolomics.tsv \
       ../data/sepsis/Ecoli_B36/Proteomics.tsv \
       ../data/sepsis/Ecoli_B36/Transcriptomics.tsv \
-   --data_names metabolome proteome transcriptome \
+   --data_names genomics metabolome proteome transcriptome \
    --force_unique FALSE \
    --ncpus 1 \
    --diablocomp 4 \
